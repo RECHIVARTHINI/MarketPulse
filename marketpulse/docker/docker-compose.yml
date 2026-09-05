@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ../backend
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      MONGODB_URI: mongodb://mongo:27017/marketpulse
+      REDIS_URL: redis://redis:6379
+      MARKET_PROVIDER: mock
+      DEMO_MODE: "true"
+      STALE_THRESHOLD_SECONDS: 90
+      UNAVAILABLE_THRESHOLD_SECONDS: 600
+    depends_on:
+      - mongo
+      - redis
+
+  frontend:
+    build:
+      context: ../frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
