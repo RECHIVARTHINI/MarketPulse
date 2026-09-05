@@ -15,6 +15,20 @@ export function createApp() {
   app.use(morgan(process.env.NODE_ENV === 'test' ? 'silent' : 'tiny'));
   app.use(generalLimiter);
 
+  app.get('/', (_req, res) => {
+    res.json({
+      name: 'MarketPulse API',
+      status: 'online',
+      version: '1.0.0',
+      description: 'Cognitive Attention Engine API for Smart Market Watchlists (Code by Groww 2026)',
+      endpoints: {
+        health: '/api/health',
+        watchlists: '/api/watchlists',
+        demoScenarios: '/api/market/demo/scenarios',
+      },
+    });
+  });
+
   app.use('/api', routes);
 
   app.use(notFoundHandler);
