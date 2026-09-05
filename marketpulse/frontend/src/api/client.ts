@@ -1,6 +1,9 @@
 import { ApiEnvelope, ApiErrorEnvelope } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const rawApiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = rawApiUrl
+  ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/+$/, '')}/api`)
+  : '/api';
 const USER_ID_KEY = 'marketpulse.demoUserId';
 
 export function getStoredUserId(): string | null {
